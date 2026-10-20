@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sonosk.github.io/sitemap.xml
+Sitemap: https://sonosk.github.io/sonosk/sitemap.xml
