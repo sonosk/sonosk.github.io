@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SonoSK: medical ultrasound simulation in Python</title>
-<meta name="description" content="SonoSK is an open-source Python library for simulating medical ultrasound: transducers and arrays, pressure fields, B-mode imaging of tissue phantoms, HIFU heating, thermal dose and lesion maps, and piezoelectric element design.">
-<meta name="keywords" content="ultrasound simulation, Python, ultrasound simulator, transducer, linear array, phased array, beamforming, B-mode, plane wave imaging, HIFU, focused ultrasound, thermal ablation, bioheat, thermal dose, mechanical index">
+<meta name="description" content="SonoSK is an open-source Python library for simulating medical ultrasound: transducers and arrays, full-wave and heterogeneous propagation, anatomical breast, prostate and uterus phantoms with sourced tissue properties, B-mode imaging, HIFU treatment planning, thermal dose and lesion maps, and piezoelectric element design.">
+<meta name="keywords" content="ultrasound simulation, Python, ultrasound simulator, k-space, full-wave, hybrid angular spectrum, transducer, linear array, convex array, beamforming, sound speed, aberration, B-mode, breast phantom, prostate, uterine fibroid, tissue properties, HIFU, focused ultrasound, treatment planning, thermal ablation, bioheat, thermal dose, Arrhenius, mechanical index">
 <meta name="author" content="Soheil Kooklan">
 <link rel="canonical" href="https://sonosk.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SonoSK: medical ultrasound simulation in Python">
-<meta property="og:description" content="Transducers, pressure fields, B-mode images of tissue phantoms, HIFU heating and thermal dose in one open-source Python library.">
+<meta property="og:description" content="Transducers, full-wave fields, anatomical phantoms with sourced tissue properties, B-mode images and HIFU treatment plans in one open-source Python library.">
 <meta property="og:url" content="https://sonosk.github.io/">
-<meta property="og:image" content="https://sonosk.github.io/assets/bmode-phantom.png">
+<meta property="og:image" content="https://sonosk.github.io/assets/breast-bmode.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,17 +23,18 @@
   "@type": "SoftwareSourceCode",
   "name": "SonoSK",
   "alternateName": "sonosk",
-  "description": "Python library for simulating medical ultrasound: transducers and arrays, continuous-wave pressure fields, pulse-echo simulation and B-mode imaging of tissue phantoms, focused ultrasound heating with the Pennes bioheat equation, thermal dose and lesion maps, piezoelectric stack design with the Mason model, acoustic output indices and image quality measures.",
+  "description": "Python library for simulating medical ultrasound: transducers and arrays, Rayleigh, angular spectrum and hybrid angular spectrum fields, a k-space pseudospectral full-wave solver for heterogeneous, absorbing and nonlinear media, a tissue property database with the source of every value, anatomical phantoms of the breast, prostate, uterus and face, B-mode imaging with sound-speed-aware beamforming, focused ultrasound treatment planning with the Pennes bioheat equation, thermal dose and Arrhenius damage, piezoelectric stack design with the Mason model, acoustic output indices and image quality measures.",
   "url": "https://sonosk.github.io/",
   "codeRepository": "https://github.com/sonosk/sonosk",
   "programmingLanguage": "Python",
   "runtimePlatform": "Python 3.11+",
   "license": "https://spdx.org/licenses/GPL-3.0-or-later.html",
-  "softwareVersion": "0.1.0",
+  "softwareVersion": "0.2.0",
+  "datePublished": "2026-10-27",
   "identifier": "https://doi.org/10.5281/zenodo.23517377",
   "sameAs": ["https://doi.org/10.5281/zenodo.23517377", "https://pypi.org/project/sonosk/", "https://github.com/sonosk/sonosk"],
   "applicationCategory": "Scientific software",
-  "keywords": ["ultrasound", "simulation", "transducer", "beamforming", "B-mode", "HIFU", "focused ultrasound", "bioheat", "thermal dose", "acoustic output"],
+  "keywords": ["ultrasound", "simulation", "k-space", "full-wave", "transducer", "beamforming", "B-mode", "tissue properties", "breast", "prostate", "uterine fibroid", "HIFU", "focused ultrasound", "treatment planning", "bioheat", "thermal dose", "acoustic output"],
   "author": {
     "@type": "Person",
     "name": "Soheil Kooklan",
@@ -142,9 +143,11 @@ footer p { margin: 4px 0; }
       <div>
         <h1>SonoSK</h1>
         <p class="lead">An open-source Python library for medical ultrasound.
-        Design a probe, place it in front of a tissue phantom, and get the
-        B-mode image, or heat a target and see the temperature, the thermal
-        dose and the lesion left behind.</p>
+        Design a probe, place it on an anatomical phantom of the breast,
+        prostate, uterus or face, and get the B-mode image, or plan a
+        focused ultrasound treatment and see the temperature, the thermal
+        dose and the lesion left behind. Every tissue value comes with its
+        published source.</p>
         <div class="install" aria-label="Install command">pip install sonosk</div>
         <div class="links">
           <a class="primary" href="/sonosk/quickstart.html">Get started</a>
@@ -153,10 +156,11 @@ footer p { margin: 4px 0; }
         </div>
       </div>
       <figure>
-        <img src="assets/bmode-hero.png" width="840" height="1320"
-             alt="Simulated B-mode image with an anechoic cyst, two lesions and a row of wire targets">
-        <figcaption>Simulated image of a test phantom: 128-element linear array
-        at 5 MHz, nine plane waves compounded.</figcaption>
+        <img src="assets/breast-hero.png" width="660" height="630"
+             alt="Simulated B-mode image of a breast with a cyst, a fibroadenoma and a spiculated carcinoma">
+        <figcaption>Simulated breast image: skin, fat, Cooper's ligaments and
+        glandular tissue with a cyst, a fibroadenoma and a carcinoma, 7.5 MHz
+        linear array, beamformed through the speed map.</figcaption>
       </figure>
     </div>
 
@@ -165,21 +169,29 @@ footer p { margin: 4px 0; }
       <dl class="scope">
         <dt>Transducers</dt>
         <dd>Flat and focused elements, annular arrays, linear and phased arrays
-        with an elevation lens, convex and endocavity arrays, matrix arrays and
-        line-focus sources, with focusing, steering and apodization.</dd>
-        <dt>Pressure fields</dt>
-        <dd>Rayleigh integral in an attenuating medium and the angular spectrum
-        method, on lines, planes and volumes.</dd>
+        with an elevation lens, convex and endocavity arrays, matrix arrays,
+        line-focus sources and spherical HIFU phased arrays.</dd>
+        <dt>Propagation</dt>
+        <dd>Rayleigh integral, angular spectrum, the hybrid angular spectrum
+        method through layered tissue, pulsed fields, and a k-space
+        pseudospectral full-wave solver for heterogeneous, absorbing and
+        nonlinear media in 1, 2 and 3 dimensions.</dd>
+        <dt>Tissues and anatomy</dt>
+        <dd>A tissue property database with the reference of every value, and
+        phantoms of the breast, prostate, uterus and face with cysts,
+        fibroadenomas, carcinomas, tumours, fibroids and calcifications.</dd>
         <dt>Imaging</dt>
-        <dd>Pulse-echo signals from scatterer phantoms, plane, diverging and
-        focused transmits, delay-and-sum beamforming and compounding.</dd>
+        <dd>Echoes through heterogeneous tissue with aberration, shadowing and
+        enhancement, frequency-dependent attenuation, plane, diverging and
+        focused transmits, compounding, sound-speed-aware beamforming, sector
+        images and full-wave pulse-echo imaging.</dd>
         <dt>Therapy</dt>
-        <dd>Heat from the field, the Pennes bioheat equation in 1, 2 and 3
-        dimensions, CEM43 dose, lesion maps, and the ablated and residual
-        target.</dd>
+        <dd>Heat sources with harmonics, the Pennes bioheat equation, CEM43
+        dose and Arrhenius damage, perfusion shutdown, treatment plans with
+        many sonications, and the ablated and residual target.</dd>
         <dt>Probe design</dt>
         <dd>Mason model of a piezoelectric element with backing and matching
-        layers: impedance, transmit and pulse-echo response.</dd>
+        layers; its pulse goes straight into the image.</dd>
         <dt>Safety and quality</dt>
         <dd>Mechanical index, derated intensities and FDA limits; resolution,
         contrast, CNR, gCNR and speckle statistics.</dd>
@@ -190,48 +202,58 @@ footer p { margin: 4px 0; }
       <h2 id="figures">Figures made with SonoSK</h2>
       <div class="cols">
         <figure>
-          <img src="assets/hifu-ablation.png" width="1440" height="528" loading="lazy"
-               alt="Peak temperature around a focused ultrasound exposure with lesion and tumour outlines">
-          <figcaption>Ablation of a 4 mm tumour by a 1 MHz focused bowl: peak
-          temperature, lesion outline and the part of the tumour left untreated.</figcaption>
+          <img src="assets/fibroid-hifu.png" width="1680" height="648" loading="lazy"
+               alt="Pressure through the abdominal wall, peak temperature and lesion over a uterine fibroid">
+          <figcaption>Treatment plan for a uterine fibroid through the abdominal
+          wall: field, peak temperature, lesion and report.</figcaption>
         </figure>
         <figure>
-          <img src="assets/array-beams.png" width="1320" height="504" loading="lazy"
-               alt="Focused, steered and apodized beams of a linear array">
-          <figcaption>Beams of a linear array: focused, steered by 20 degrees,
-          and with a Hann apodization.</figcaption>
+          <img src="assets/prostate-trus.png" width="1440" height="624" loading="lazy"
+               alt="Prostate phantom and simulated transrectal sector image">
+          <figcaption>Transrectal image of a prostate phantom with a peripheral
+          zone tumour and calcifications.</figcaption>
         </figure>
         <figure>
-          <img src="assets/bowl-field.png" width="1200" height="504" loading="lazy"
-               alt="Field of a focused bowl and its on-axis amplitude against the O'Neil solution">
-          <figcaption>Field of a focused bowl, checked against O'Neil's closed-form
-          solution on the axis.</figcaption>
+          <img src="assets/uterus.png" width="1440" height="744" loading="lazy"
+               alt="Uterus phantom and simulated transabdominal image through the full bladder">
+          <figcaption>Transabdominal image of a uterus with a fibroid, seen
+          through the full bladder.</figcaption>
         </figure>
         <figure>
-          <img src="assets/transducer-stack.png" width="1200" height="456" loading="lazy"
-               alt="Impedance and pulse-echo response of a piezoelectric element with and without a matching layer">
-          <figcaption>A 5.7 MHz element with and without a quarter-wave matching
-          layer: the two-way bandwidth grows from 12 % to 36 %.</figcaption>
+          <img src="assets/fullwave-validation.png" width="1680" height="504" loading="lazy"
+               alt="Full-wave solver against theory: absorption, harmonics and reflection">
+          <figcaption>The full-wave solver against theory: power-law absorption,
+          the Fubini solution and an interface.</figcaption>
         </figure>
       </div>
     </section>
 
     <section aria-labelledby="start">
       <h2 id="start">A first simulation</h2>
-<pre><code>import sonosk as sk
-from sonosk import field, transducer
+<pre><code>import numpy as np
+import sonosk as sk
+from sonosk import imaging, organs, phantom, transducer
 
-probe = transducer.linear_array(128, pitch=0.3e-3, height=5e-3, elev_focus=20e-3)
-probe.focus((0, 0, 20e-3), c=1540.0)
+grid = sk.Grid.centered((401, 401), 0.1e-3, depth_start=0.0)
+breast = organs.breast(grid, lesions=[organs.Carcinoma((5e-3, 0, 15e-3))], rng=1)
+pos, amp = phantom.scatterers(breast.medium, density=50, rng=1)
 
-grid = sk.Grid.centered((121, 151), 0.2e-3, depth_start=2e-3)
-p = field.rayleigh_grid(probe, grid, f=5e6, c=1540.0, alpha0=0.5)</code></pre>
+probe = transducer.linear_array(128, pitch=0.3e-3, height=4e-3)
+pulse = imaging.Pulse(7.5e6, 0.65)
+tx = imaging.Transmit.plane(0.0)
+rf, fs = imaging.simulate(probe, tx, pos, amp, pulse, medium=breast.medium)
+x, z = np.arange(-18e-3, 18e-3, 8e-5), np.arange(1e-3, 39e-3, 8e-5)
+image = imaging.beamform(rf, fs, probe, tx, x, z, medium=breast.medium)</code></pre>
       <p>The <a href="/sonosk/quickstart.html">getting started page</a> continues
       from here to a phantom, an image, its quality measures and a heating
-      exposure. Each solver is checked against a closed-form result; the
-      comparisons are on the <a href="/sonosk/validation.html">validation
-      page</a>, and the plan for tissue data and organ phantoms is on the
-      <a href="/sonosk/roadmap.html">roadmap</a>.</p>
+      exposure, and on to anatomical phantoms. Each solver is checked against
+      a closed-form result or an independent method; the comparisons are on
+      the <a href="/sonosk/validation.html">validation page</a>, the
+      convergence studies and a comparison with k-Wave on the
+      <a href="/sonosk/benchmarks.html">benchmarks page</a>, and what the
+      models assume and leave out on the
+      <a href="/sonosk/limitations.html">scope and limits page</a>. What comes
+      next is on the <a href="/sonosk/roadmap.html">roadmap</a>.</p>
     </section>
 
     <section aria-labelledby="cite">
@@ -246,7 +268,7 @@ p = field.rayleigh_grid(probe, grid, f=5e6, c=1540.0, alpha0=0.5)</code></pre>
 
   <footer>
     <p>SonoSK is free software under the GNU General Public License, version 3 or later.</p>
-    <p>Research software: not a medical device, not for clinical decisions.</p>
+    <p>Research and teaching software: not a medical device, not for clinical decisions or treatment planning of patients.</p>
     <p>Written by Soheil Kooklan, <a href="https://orcid.org/0009-0003-5035-7833">ORCID 0009-0003-5035-7833</a>.</p>
   </footer>
 </div>
