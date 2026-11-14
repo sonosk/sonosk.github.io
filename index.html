@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SonoSK: medical ultrasound simulation in Python</title>
-<meta name="description" content="SonoSK is an open-source Python library for simulating medical ultrasound: transducers and arrays, full-wave and heterogeneous propagation, anatomical breast, prostate and uterus phantoms with sourced tissue properties, B-mode imaging, HIFU treatment planning, thermal dose and lesion maps, and piezoelectric element design.">
+<meta name="description" content="SonoSK is an open-source Python library for simulating medical ultrasound: transducers and arrays, full-wave and heterogeneous propagation, anatomical breast, prostate and uterus phantoms with referenced tissue properties, B-mode imaging, HIFU treatment planning, thermal dose and lesion maps, and piezoelectric element design.">
 <meta name="keywords" content="ultrasound simulation, Python, ultrasound simulator, k-space, full-wave, hybrid angular spectrum, transducer, linear array, convex array, beamforming, sound speed, aberration, B-mode, breast phantom, prostate, uterine fibroid, tissue properties, HIFU, focused ultrasound, treatment planning, thermal ablation, bioheat, thermal dose, Arrhenius, mechanical index">
 <meta name="author" content="Soheil Kooklan">
 <link rel="canonical" href="https://sonosk.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SonoSK: medical ultrasound simulation in Python">
-<meta property="og:description" content="Transducers, full-wave fields, anatomical phantoms with sourced tissue properties, B-mode images and HIFU treatment plans in one open-source Python library.">
+<meta property="og:description" content="Transducers, full-wave fields, anatomical phantoms with referenced tissue properties, B-mode images and HIFU treatment plans in one open-source Python library.">
 <meta property="og:url" content="https://sonosk.github.io/">
 <meta property="og:image" content="https://sonosk.github.io/assets/breast-bmode.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
   "@type": "SoftwareSourceCode",
   "name": "SonoSK",
   "alternateName": "sonosk",
-  "description": "Python library for simulating medical ultrasound: transducers and arrays, Rayleigh, angular spectrum and hybrid angular spectrum fields, a k-space pseudospectral full-wave solver for heterogeneous, absorbing and nonlinear media, a tissue property database with the source of every value, anatomical phantoms of the breast, prostate, uterus and face, B-mode imaging with sound-speed-aware beamforming, focused ultrasound treatment planning with the Pennes bioheat equation, thermal dose and Arrhenius damage, piezoelectric stack design with the Mason model, acoustic output indices and image quality measures.",
+  "description": "Python library for simulating medical ultrasound: transducers and arrays, Rayleigh, angular spectrum and hybrid angular spectrum fields, a k-space pseudospectral full-wave solver for heterogeneous, absorbing and nonlinear media, a tissue property database with a reference or modelling note and the kind of every value, anatomical phantoms of the breast, prostate, uterus and face, B-mode imaging with sound-speed-aware beamforming, focused ultrasound treatment planning with the Pennes bioheat equation, thermal dose and Arrhenius damage, piezoelectric stack design with the Mason model, acoustic output indices and image quality measures.",
   "url": "https://sonosk.github.io/",
   "codeRepository": "https://github.com/sonosk/sonosk",
   "programmingLanguage": "Python",
@@ -146,8 +146,8 @@ footer p { margin: 4px 0; }
         Design a probe, place it on an anatomical phantom of the breast,
         prostate, uterus or face, and get the B-mode image, or plan a
         focused ultrasound treatment and see the temperature, the thermal
-        dose and the lesion left behind. Every tissue value comes with its
-        published source.</p>
+        dose and the lesion left behind. Every tissue value records a
+        reference or a modelling note and how it was obtained.</p>
         <div class="install" aria-label="Install command">pip install sonosk</div>
         <div class="links">
           <a class="primary" href="/sonosk/quickstart.html">Get started</a>
@@ -175,9 +175,14 @@ footer p { margin: 4px 0; }
         <dd>Rayleigh integral, angular spectrum, the hybrid angular spectrum
         method through layered tissue, pulsed fields, and a k-space
         pseudospectral full-wave solver for heterogeneous, absorbing and
-        nonlinear media in 1, 2 and 3 dimensions.</dd>
+        nonlinear media in 1, 2 and 3 dimensions. 3-D runs are implemented;
+        one linear case in a homogeneous medium has been checked, while
+        heterogeneous, absorbing, nonlinear and pulse-echo 3-D runs have
+        not been tested.</dd>
         <dt>Tissues and anatomy</dt>
-        <dd>A tissue property database with the reference of every value, and
+        <dd>A tissue property database with a reference or modelling note and
+        the kind of every value (measured, fitted, database average,
+        inherited or modelling choice), and
         phantoms of the breast, prostate, uterus and face with cysts,
         fibroadenomas, carcinomas, tumours, fibroids and calcifications.</dd>
         <dt>Imaging</dt>
@@ -188,12 +193,14 @@ footer p { margin: 4px 0; }
         <dt>Therapy</dt>
         <dd>Heat sources with harmonics, the Pennes bioheat equation, CEM43
         dose and Arrhenius damage, perfusion shutdown, treatment plans with
-        many sonications, and the ablated and residual target.</dd>
+        many sonications, and the target volume above the lesion threshold,
+        a model output.</dd>
         <dt>Probe design</dt>
         <dd>Mason model of a piezoelectric element with backing and matching
         layers; its pulse goes straight into the image.</dd>
         <dt>Safety and quality</dt>
-        <dd>Mechanical index, derated intensities and FDA limits; resolution,
+        <dd>Mechanical index and derated intensities as defined by the FDA
+        guidance, a screening check against its limits; resolution,
         contrast, CNR, gCNR and speckle statistics.</dd>
       </dl>
     </section>
@@ -246,9 +253,10 @@ x, z = np.arange(-18e-3, 18e-3, 8e-5), np.arange(1e-3, 39e-3, 8e-5)
 image = imaging.beamform(rf, fs, probe, tx, x, z, medium=breast.medium)</code></pre>
       <p>The <a href="/sonosk/quickstart.html">getting started page</a> continues
       from here to a phantom, an image, its quality measures and a heating
-      exposure, and on to anatomical phantoms. Each solver is checked against
-      a closed-form result or an independent method; the comparisons are on
-      the <a href="/sonosk/validation.html">validation page</a>, the
+      exposure, and on to anatomical phantoms. The tests compare the solvers
+      with closed-form results, and nothing has been compared with
+      measurements yet; the checks and the maturity of each capability are
+      on the <a href="/sonosk/validation.html">validation page</a>, the
       convergence studies and a comparison with k-Wave on the
       <a href="/sonosk/benchmarks.html">benchmarks page</a>, and what the
       models assume and leave out on the
